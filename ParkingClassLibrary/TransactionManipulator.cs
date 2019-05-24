@@ -15,59 +15,92 @@ namespace ParkingClassLibrary
             public static SchedulerService Instance => _instance ?? (_instance = new SchedulerService());
             public void ScheduleTask(double intervalInSecond, Action task)
             {
-                var timer = new Timer(x =>
+                try
                 {
-                    task.Invoke();
-                }, null, TimeSpan.Zero, TimeSpan.FromSeconds(intervalInSecond));
-                timers.Add(timer);
+                    var timer = new Timer(x =>
+                    {
+                        task.Invoke();
+                    }, null, TimeSpan.Zero, TimeSpan.FromSeconds(intervalInSecond));
+                    timers.Add(timer);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                    Console.ReadLine();
+                }
             }
         }
-        public static void doTransactions(Parking parking, TextWriter w)
+        public static void DoTransactions(Parking parking, TextWriter w)
         {
                 SchedulerService.Instance.ScheduleTask(DefaultConfigurations.timePeriodInSeconds, () =>
                 {
-                     foreach (Transport t in parking.transports.ToArray())
+                    try {
+                        foreach (Transport t in parking.transports.ToArray())
+                        {
+                            decimal parkingCost = 0.0M;
+                            if (t.CheckBalance() == true)
+                            {
+                                parkingCost = Convert.ToDecimal(DefaultConfigurations.timePeriodInSeconds) * t.parkingCost;
+                            }
+                            else
+                            {
+                                parkingCost = Convert.ToDecimal(DefaultConfigurations.timePeriodInSeconds) * t.parkingCost * Convert.ToDecimal(DefaultConfigurations.penaltyRatio);
+                            }
+                            t.ReplenishBalance(-parkingCost);
+                            parking.ReplenishBalance(parkingCost);
+                            var transaction = new Transaction(parkingCost, t.TransportId());
+                            transaction.Log(w);
+                            parking.transactionsJournal.Add(transaction);
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        decimal parkingCost = 0.0M;
-                        if (t.checkBalance() == true)
-                        {
-                            parkingCost = Convert.ToDecimal(DefaultConfigurations.timePeriodInSeconds) * t.parkingCost;
-                        }
-                        else
-                        {
-                            parkingCost = Convert.ToDecimal(DefaultConfigurations.timePeriodInSeconds) * t.parkingCost * Convert.ToDecimal(DefaultConfigurations.penaltyRatio);
-                        }
-                        t.replenishBalance(-parkingCost);
-                        parking.replenishBalance(parkingCost);
-                        var transaction = new Transaction(parkingCost, t.transportId());
-                        transaction.log(w);
-                        parking.transactionsJournal.Add(transaction);
+                        Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                        Console.ReadLine();
                     }
                 });
         }
-        public static void deleteTransactions(Parking parking)
+        public static void DeleteTransactions(Parking parking)
         {
                 SchedulerService.Instance.ScheduleTask(DefaultConfigurations.timePeriodInSeconds-1, () =>
                 {
-                    foreach (Transaction tr in parking.transactionsJournal.ToArray())
+                    try
                     {
-                        TimeSpan difference = DateTime.Now - tr.transactionTime;
-                        if (difference.TotalMinutes >= 1)
+                        foreach (Transaction tr in parking.transactionsJournal.ToArray())
                         {
-                            parking.transactionsJournal.Remove(tr);
+                            TimeSpan difference = DateTime.Now - tr.transactionTime;
+                            if (difference.TotalMinutes >= 1)
+                            {
+                                parking.transactionsJournal.Remove(tr);
+                            }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                        Console.ReadLine();
                     }
                 });
         }
-        public static void showLastTransactions(Parking parking)
+        public static void ShowLastTransactions(Parking parking)
         {
+            try
+            {
                 foreach (Transaction tr in parking.transactionsJournal)
                 {
                     Console.WriteLine($"{tr.transactionTime:dddd, d MMM yy}----------{tr.transactionTime:HH:mm:ss}----------{tr.transportID}----------{tr.transferredMoney:C}");
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                Console.ReadLine();
+            }
         }
-        public static decimal showAmountOfMoneyEarned(Parking parking)
+        public static decimal ShowAmountOfMoneyEarned(Parking parking)
         {
+            try
+            {
                 decimal amount = 0.0M;
                 foreach (Transaction tr in parking.transactionsJournal)
                 {
@@ -75,15 +108,29 @@ namespace ParkingClassLibrary
 
                 }
                 return amount;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                Console.ReadLine();
+                return 0.0M;
+            }
         }
-        
-        public static void printAllTransactions(StreamReader r)
+        public static void PrintAllTransactions(StreamReader r)
         {
+            try
+            {
                 string line;
                 while ((line = r.ReadLine()) != null)
                 {
                     Console.WriteLine(line);
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                Console.ReadLine();
+            }
         }
     }
 }

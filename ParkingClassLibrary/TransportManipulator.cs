@@ -5,7 +5,9 @@ namespace ParkingClassLibrary
 {
     public static class TransportManipulator
     {
-        public static void addTransport(Parking parking, string transportType, decimal balance)
+        public static void AddTransport(Parking parking, string transportType, decimal balance)
+            {
+            try
             {
                 if (parking.transports.Count == 10)
                 {
@@ -17,32 +19,39 @@ namespace ParkingClassLibrary
                     switch (transportType.ToLower())
                     {
                         case "car":
-                            transport = new Car(parking.outputTransportCounter(), balance);
+                            transport = new Car(parking.OutputTransportCounter(), balance);
                             break;
                         case "truck":
-                            transport = new Truck(parking.outputTransportCounter(), balance);
+                            transport = new Truck(parking.OutputTransportCounter(), balance);
                             break;
                         case "bus":
-                            transport = new Bus(parking.outputTransportCounter(), balance);
+                            transport = new Bus(parking.OutputTransportCounter(), balance);
                             break;
                         case "motorcycle":
-                            transport = new Motorcycle(parking.outputTransportCounter(), balance);
+                            transport = new Motorcycle(parking.OutputTransportCounter(), balance);
                             break;
                         default:
                             throw new System.ArgumentException($"{transportType} is not available transport type");
                     }
                     parking.transports.Add(transport);
-                    parking.increaseTransortCounter();
-                    Console.WriteLine($"Your transport was succesfully added to the parking. Your ID number is {transport.transportId()}, please don't forget it. Thank you for using our service.");
+                    parking.IncreaseTransortCounter();
+                    Console.WriteLine($"Your transport was succesfully added to the parking. Your ID number is {transport.TransportId()}, please don't forget it. Thank you for using our service.");
                 }
             }
-        
-        public static void removeTransport(Parking parking, string id)
+            catch(Exception ex)
+            {
+                Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                Console.ReadLine();
+            }
+            }
+        public static void RemoveTransport(Parking parking, string id)
         {
+            try
+            {
                 bool check = false;
                 foreach (Transport t in parking.transports.ToArray())
                 {
-                    if (t.transportId() == id)
+                    if (t.TransportId() == id)
                     {
                         parking.transports.Remove(t);
                         check = true;
@@ -56,15 +65,23 @@ namespace ParkingClassLibrary
                 {
                     Console.WriteLine($"Sorry, but there is not thransort with this ID.");
                 }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                Console.ReadLine();
+            }
         }
-        public static void showTransportBalance(Parking parking, string id)
+        public static void ShowTransportBalance(Parking parking, string id)
         {
+            try
+            {
                 bool check = false;
                 foreach (Transport t in parking.transports)
                 {
-                    if (t.transportId() == id)
+                    if (t.TransportId() == id)
                     {
-                        Console.WriteLine($"{t.transportId()} has {t.getBalance():C} on its balance");
+                        Console.WriteLine($"{t.TransportId()} has {t.GetBalance():C} on its balance");
                         check = true;
                     }
                 }
@@ -72,16 +89,24 @@ namespace ParkingClassLibrary
                 {
                     Console.WriteLine($"Sorry, but there is not thransort with this ID.");
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                Console.ReadLine();
+            }
         }
-        public static void replanishBalance(Parking parking, string id, decimal replanishment)
+        public static void ReplanishBalance(Parking parking, string id, decimal replanishment)
         {
+            try
+            {
                 bool check = false;
                 foreach (Transport t in parking.transports)
                 {
-                    if (t.transportId() == id)
+                    if (t.TransportId() == id)
                     {
-                        t.replenishBalance(replanishment);
-                        Console.WriteLine($"{t.transportId()} was succesfully replanished and has {t.getBalance():C} on its balance");
+                        t.ReplenishBalance(replanishment);
+                        Console.WriteLine($"{t.TransportId()} was succesfully replanished and has {t.GetBalance():C} on its balance");
                         check = true;
                     }
                 }
@@ -89,16 +114,29 @@ namespace ParkingClassLibrary
                 {
                     Console.WriteLine($"Sorry, but there is not transort with this ID.");
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                Console.ReadLine();
+            }
         }
-        
-        public static int countFreeLots(Parking parking) => 10 - parking.transports.Count;
-        public static int countBusyLots(Parking parking) => parking.transports.Count;
-        public static void showList(Parking parking)
+        public static int CountFreeLots(Parking parking) => 10 - parking.transports.Count;
+        public static int CountBusyLots(Parking parking) => parking.transports.Count;
+        public static void ShowList(Parking parking)
         {
+            try
+            {
                 foreach (Transport t in parking.transports)
                 {
-                    Console.WriteLine($"{t.transportId()} has {t.getBalance():C}");
+                    Console.WriteLine($"{t.TransportId()} has {t.GetBalance():C}");
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                Console.ReadLine();
+            }
         }
     }
 }

@@ -19,9 +19,18 @@ namespace ParkingClassLibrary
             this.transferredMoney = transferredMoney;
             transportID = transportId;
         }
-        public void log(TextWriter w)
+        public void Log(TextWriter w)
         {
-            w.WriteLine($"  :{transactionTime:dddd, d MMM yy}----------{transactionTime:HH:mm:ss}----------{transportID}----------{transferredMoney:C}");
+            try
+            {
+                w.WriteLine($"  :{transactionTime:dddd, d MMM yy}----------{transactionTime:HH:mm:ss}----------{transportID}----------{transferredMoney:C}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                Console.ReadLine();
+            }
         }
+
     }
 }

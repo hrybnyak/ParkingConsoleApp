@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading;
 
 namespace ParkingClassLibrary
 {
@@ -14,7 +12,15 @@ namespace ParkingClassLibrary
         internal List<Transaction> transactionsJournal = new List<Transaction>();
         public Parking()
         {
-            balance = DefaultConfigurations.initialBalance;
+            try
+            {
+                balance = DefaultConfigurations.initialBalance;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                Console.ReadLine();
+            }
         }
         public static Parking getInstance()
         {
@@ -22,18 +28,33 @@ namespace ParkingClassLibrary
                 instance = new Parking();
             return instance;
         }
-        public void replenishBalance(decimal replenishment)
+        public void ReplenishBalance(decimal replenishment)
         {
-            balance += replenishment;
+            try
+            {
+                balance += replenishment;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                Console.ReadLine();
+            }
         }
 
-        public decimal outBalance() => balance;
-        public uint outputTransportCounter() => transportCounter;
-        public void increaseTransortCounter()
+        public decimal OutBalance() => balance;
+        public uint OutputTransportCounter() => transportCounter;
+        public void IncreaseTransortCounter()
         {
-            transportCounter++;
+            try
+            {
+                transportCounter++;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ ex.GetType()} says { ex.Message}");
+                Console.ReadLine();
+            }
         }
-
     }
 }
 
